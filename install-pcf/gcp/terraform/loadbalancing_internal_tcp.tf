@@ -22,15 +22,15 @@ resource "google_compute_region_backend_service" "cf-haproxy" {
   timeout_sec = 10
 
   backend {
+    group = "${google_compute_instance_group.cf-haproxy.0.self_link}"
+  }
+
+  backend {
     group = "${google_compute_instance_group.cf-haproxy.1.self_link}"
   }
 
   backend {
     group = "${google_compute_instance_group.cf-haproxy.2.self_link}"
-  }
-
-  backend {
-    group = "${google_compute_instance_group.cf-haproxy.3.self_link}"
   }
 
   health_checks = ["${google_compute_health_check.cf-haproxy.self_link}"]
