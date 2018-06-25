@@ -41,7 +41,7 @@ resource "google_dns_record_set" "app-ssh-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_address.ssh-and-doppler.address}"]
+  rrdatas = ["${google_compute_forwarding_rule.cf-ssh-proxy.ip_address}"]
 }
 
 resource "google_dns_record_set" "doppler-dns" {
@@ -51,7 +51,7 @@ resource "google_dns_record_set" "doppler-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_address.ssh-and-doppler.address}"]
+  rrdatas = ["${google_compute_forwarding_rule.cf-wss-logs.ip_address}"]
 }
 
 resource "google_dns_record_set" "loggregator-dns" {
@@ -61,15 +61,16 @@ resource "google_dns_record_set" "loggregator-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_address.ssh-and-doppler.address}"]
+  rrdatas = ["${google_compute_forwarding_rule.cf-wss-logs.ip_address}"]
 }
 
-resource "google_dns_record_set" "tcp-dns" {
-  name = "tcp.${google_dns_managed_zone.env_dns_zone.dns_name}"
-  type = "A"
-  ttl  = 300
-
-  managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
-
-  rrdatas = ["${google_compute_address.cf-tcp.address}"]
-}
+//// Uncomment this record if you use the TCP router
+////resource "google_dns_record_set" "tcp-dns" {
+////  name = "tcp.${google_dns_managed_zone.env_dns_zone.dns_name}"
+////  type = "A"
+////  ttl  = 300
+////
+////  managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
+////
+////  rrdatas = ["${google_compute_address.cf-tcp.address}"]
+////}

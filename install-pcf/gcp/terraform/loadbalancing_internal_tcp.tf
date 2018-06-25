@@ -89,7 +89,9 @@ resource "google_compute_health_check" "cf-ssh-proxy" {
   check_interval_sec = 5
   timeout_sec        = 5
 
-  ssl_health_check {}
+  tcp_health_check {
+    port = 2222
+  }
 }
 
 //// Internal TCP load balancer that fronts wss-logs
