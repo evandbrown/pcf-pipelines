@@ -54,6 +54,19 @@ resource "google_compute_firewall" "pcf-allow-http-8080" {
   target_tags   = ["router"]
 }
 
+//// Internal TCP LB->HAProxy Health Checks
+resource "google_compute_firewall" "haprox-health-check" {
+  name    = "${var.prefix}-allow-ilb-health-check"
+  network = "${google_compute_network.pcf-virt-net.name}"
+
+  allow {
+    protocol = "tcp"
+  }
+
+  source_ranges = ["35.191.0.0/16", "130.211.0.0/22"]
+  target_tags   = ["ha-proxy"]
+}
+
 //// Create Firewall Rule for allow-ert-all com between bosh deployed ert jobs
 //// This will match the default OpsMan tag configured for the deployment
 resource "google_compute_firewall" "allow-ert-all" {
