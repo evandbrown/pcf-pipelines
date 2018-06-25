@@ -450,7 +450,7 @@ if [[ "${pcf_iaas}" == "gcp" ]]; then
     curl \
     --request "PUT" \
     --header "Content-Type: application/json" \
-    --path "/api/v0/staged/vm_extensions/${terraform_prefix}-haproxy-lb-backend" \
+    --path "/api/v0/staged/vm_extensions/${terraform_prefix}-ssh-proxy-lb-backend" \
     --data "{\"name\": \"${terraform_prefix}-ssh-proxy-lb-backend\", \"cloud_properties\": { \"backend_service\": {\"name\": \"${terraform_prefix}-ssh-proxy-lb-backend\", \"scheme\": \"INTERNAL\"} }}"
 
   # A custom VM extension is required to use internal TCP load balancing in GCP
@@ -464,7 +464,7 @@ if [[ "${pcf_iaas}" == "gcp" ]]; then
     --request "PUT" \
     --header "Content-Type: application/json" \
     --path "/api/v0/staged/vm_extensions/${terraform_prefix}-wss-logs-lb-backend" \
-    --data "{\"name\": \"${terraform_prefix}-haproxy-lb-backend\", \"cloud_properties\": { \"backend_service\": {\"name\": \"${terraform_prefix}-wss-logs-lb-backend\", \"scheme\": \"INTERNAL\"} }}"
+    --data "{\"name\": \"${terraform_prefix}-wss-logs-lb-backend\", \"cloud_properties\": { \"backend_service\": {\"name\": \"${terraform_prefix}-wss-logs-lb-backend\", \"scheme\": \"INTERNAL\"} }}"
 
   cf_guid=$(om-linux \
     --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
