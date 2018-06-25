@@ -436,8 +436,8 @@ if [[ "${pcf_iaas}" == "gcp" ]]; then
     curl \
     --request "PUT" \
     --header "Content-Type: application/json" \
-    --path "/api/v0/staged/vm_extensions/${terraform_prefix}-tcp-ilb-backend" \
-    --data "{\"name\": \"${terraform_prefix}-tcp-ilb-backend\", \"cloud_properties\": { \"backend_service\": {\"name\": \"${terraform_prefix}-tcp-ilb-backend\", \"scheme\": \"INTERNAL\"} }}"
+    --path "/api/v0/staged/vm_extensions/${terraform_prefix}-haproxy-lb-backend" \
+    --data "{\"name\": \"${terraform_prefix}-haproxy-lb-backend\", \"cloud_properties\": { \"backend_service\": {\"name\": \"${terraform_prefix}-haproxy-lb-backend\", \"scheme\": \"INTERNAL\"} }}"
 
   cf_guid=$(om-linux \
     --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
@@ -467,7 +467,7 @@ if [[ "${pcf_iaas}" == "gcp" ]]; then
     curl \
     --request "GET" \
     --silent \
-    --path "/api/v0/staged/products/${cf_guid}/jobs/${haproxy_job_guid}/resource_config" | jq ". + {\"additional_vm_extensions\":[\"${terraform_prefix}-tcp-ilb-backend\"]}")
+    --path "/api/v0/staged/products/${cf_guid}/jobs/${haproxy_job_guid}/resource_config" | jq ". + {\"additional_vm_extensions\":[\"${terraform_prefix}-haproxy-lb-backend\"]}")
 
   om-linux \
     --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
