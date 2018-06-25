@@ -21,7 +21,7 @@ resource "google_dns_record_set" "wildcard-sys-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_forwarding_rule.cf-haproxy.ip_address}"]
+  rrdatas = ["${google_compute_address.internal_haproxy.address}"]
 }
 
 resource "google_dns_record_set" "wildcard-apps-dns" {
@@ -31,7 +31,7 @@ resource "google_dns_record_set" "wildcard-apps-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_forwarding_rule.cf-haproxy.ip_address}"]
+  rrdatas = ["${google_compute_address.internal_haproxy.address}"]
 }
 
 resource "google_dns_record_set" "app-ssh-dns" {
@@ -41,7 +41,7 @@ resource "google_dns_record_set" "app-ssh-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_forwarding_rule.cf-ssh-proxy.ip_address}"]
+  rrdatas = ["${google_compute_address.internal_ssh_proxy.address}"]
 }
 
 resource "google_dns_record_set" "doppler-dns" {
@@ -51,7 +51,7 @@ resource "google_dns_record_set" "doppler-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_forwarding_rule.cf-wss-logs.ip_address}"]
+  rrdatas = ["${google_compute_address.internal_wss_logs.address}"]
 }
 
 resource "google_dns_record_set" "loggregator-dns" {
@@ -61,7 +61,7 @@ resource "google_dns_record_set" "loggregator-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_forwarding_rule.cf-wss-logs.ip_address}"]
+  rrdatas = ["${google_compute_address.internal_wss_logs.address}"]
 }
 
 //// Uncomment this record if you use the TCP router
@@ -74,3 +74,4 @@ resource "google_dns_record_set" "loggregator-dns" {
 ////
 ////  rrdatas = ["${google_compute_address.cf-tcp.address}"]
 ////}
+
