@@ -157,7 +157,7 @@ cf_resources=$(
       "diego_cell": {"internet_connected": $internet_connected},
       "diego_database": {"internet_connected": $internet_connected},
       "doppler": {"internet_connected": $internet_connected},
-      "ha_proxy": {"internet_connected": $internet_connected},
+      "ha_proxy": {"instances": 3, "internet_connected": $internet_connected},
       "loggregator_trafficcontroller": {"internet_connected": $internet_connected},
       "mysql": {"instances": 0, "internet_connected": $internet_connected},
       "mysql_monitor": {"instances": 0, "internet_connected": $internet_connected},
@@ -179,8 +179,6 @@ cf_resources=$(
       .router |= . + { "elb_names": ["\($terraform_prefix)-Pcf-Http-Elb"] }
       | .diego_brain |= . + { "elb_names": ["\($terraform_prefix)-Pcf-Ssh-Elb"] }
     elif $iaas == "gcp" then
-      .router |= . + { "elb_names": ["http:\($terraform_prefix)-http-lb-backend","tcp:\($terraform_prefix)-wss-logs"] }
-      | .diego_brain |= . + { "elb_names": ["tcp:\($terraform_prefix)-ssh-proxy"] }
     else
       .
     end
@@ -428,3 +426,56 @@ om-linux \
   --product-properties "$cf_properties" \
   --product-network "$cf_network" \
   --product-resources "$cf_resources"
+
+if [[ "${pcf_iaas}" == "gcp" ]]; then
+  # A custom VM extension is required to use internal TCP load balancing in GCP 
+  om-linux \
+    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --username "$OPS_MGR_USR" \
+    --password "$OPS_MGR_PWD" \
+    --skip-ssl-validation \
+    curl \
+    --request "PUT" \
+    --header "Content-Type: application/json" \
+    --path "/api/v0/staged/vm_extensions/${terraform_prefix}-tcp-ilb-backend" \
+    --data "{\"name\": \"${terraform_prefix}-tcp-ilb-backend\", \"cloud_properties\": { \"backend_service\": {\"name\": \"${terraform_prefix}-tcp-ilb-backend\", \"scheme\": \"INTERNAL\"} }}"
+
+  cf_guid=$(om-linux \
+    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --username "$OPS_MGR_USR" \
+    --password "$OPS_MGR_PWD" \
+    --skip-ssl-validation \
+    curl \
+    --request "GET" \
+    --silent \
+    --path "/api/v0/staged/products" | jq -r '.[] | select(.type == "cf") | .guid')
+
+  haproxy_job_guid=$(om-linux \
+    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --username "$OPS_MGR_USR" \
+    --password "$OPS_MGR_PWD" \
+    --skip-ssl-validation \
+    curl \
+    --request "GET" \
+    --silent \
+    --path "/api/v0/staged/products/${cf_guid}/jobs" | jq -r '.jobs[] | select(.name == "ha_proxy") | .guid')
+
+  haproxy_custom_vm_extension=$(om-linux \
+    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --username "$OPS_MGR_USR" \
+    --password "$OPS_MGR_PWD" \
+    --skip-ssl-validation \
+    curl \
+    --request "GET" \
+    --silent \
+    --path "/api/v0/staged/products/${cf_guid}/jobs/${haproxy_job_guid}/resource_config" | jq ". + {\"additional_vm_extensions\":[\"${terraform_prefix}-tcp-ilb-backend\"]}")
+
+  om-linux \
+    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --username "$OPS_MGR_USR" \
+    --password "$OPS_MGR_PWD" \
+    --skip-ssl-validation \
+    curl\
+    --request "PUT" \
+    --path "/api/v0/staged/products/${cf_guid}/jobs/${haproxy_job_guid}/resource_config" -d "$data"
+fi
