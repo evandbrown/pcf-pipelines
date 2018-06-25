@@ -98,13 +98,13 @@ output "dynamic_svc_net_1_subnet" {
 
 // Http Load Balancer Output
 
-output "http_lb_backend_name" {
-  value = "${google_compute_backend_service.ert_http_lb_backend_service.name}"
-}
+//output "http_lb_backend_name" {
+//  value = "${google_compute_backend_service.ert_http_lb_backend_service.name}"
+//}
 
-output "tcp_router_pool" {
-  value = "${google_compute_target_pool.cf-tcp.name}"
-}
+//output "tcp_router_pool" {
+//  value = "${google_compute_target_pool.cf-tcp.name}"
+//}
 
 // Cloud Storage Bucket Output
 
@@ -148,10 +148,10 @@ output "sql_instance_ip" {
   value = "${google_sql_database_instance.master.ip_address.0.ip_address}"
 }
 
-output "ert_certificate" {
-  value = "${google_compute_ssl_certificate.ssl-cert.certificate}"
-}
+//output "ert_certificate" {
+//  value = "${google_compute_ssl_certificate.ssl-cert.certificate}"
+//}
 
-output "ert_certificate_key" {
-  value = "${google_compute_ssl_certificate.ssl-cert.private_key}"
-}
+//output "ert_certificate_key" {
+//  value = "${google_compute_ssl_certificate.ssl-cert.private_key}"
+//}
