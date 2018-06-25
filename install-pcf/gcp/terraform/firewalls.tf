@@ -54,7 +54,7 @@ resource "google_compute_firewall" "pcf-allow-http-8080" {
   target_tags   = ["router"]
 }
 
-//// Internal TCP LB->HAProxy Health Checks
+//// Internal TCP LB Health Checks
 resource "google_compute_firewall" "haprox-health-check" {
   name    = "${var.prefix}-allow-ilb-health-check"
   network = "${google_compute_network.pcf-virt-net.name}"
@@ -64,7 +64,7 @@ resource "google_compute_firewall" "haprox-health-check" {
   }
 
   source_ranges = ["35.191.0.0/16", "130.211.0.0/22"]
-  target_tags   = ["ha-proxy"]
+  target_tags   = ["ha-proxy", "router", "diego-brain"]
 }
 
 //// Create Firewall Rule for allow-ert-all com between bosh deployed ert jobs

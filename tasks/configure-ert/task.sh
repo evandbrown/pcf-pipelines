@@ -428,6 +428,7 @@ om-linux \
 
 if [[ "${pcf_iaas}" == "gcp" ]]; then
   # A custom VM extension is required to use internal TCP load balancing in GCP 
+  # This extension is for the HAProxy. 
   om-linux \
     --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
     --username "$OPS_MGR_USR" \
@@ -439,6 +440,32 @@ if [[ "${pcf_iaas}" == "gcp" ]]; then
     --path "/api/v0/staged/vm_extensions/${terraform_prefix}-haproxy-lb-backend" \
     --data "{\"name\": \"${terraform_prefix}-haproxy-lb-backend\", \"cloud_properties\": { \"backend_service\": {\"name\": \"${terraform_prefix}-haproxy-lb-backend\", \"scheme\": \"INTERNAL\"} }}"
 
+  # A custom VM extension is required to use internal TCP load balancing in GCP.
+  # This extension is for the ssh proxy
+  om-linux \
+    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --username "$OPS_MGR_USR" \
+    --password "$OPS_MGR_PWD" \
+    --skip-ssl-validation \
+    curl \
+    --request "PUT" \
+    --header "Content-Type: application/json" \
+    --path "/api/v0/staged/vm_extensions/${terraform_prefix}-haproxy-lb-backend" \
+    --data "{\"name\": \"${terraform_prefix}-ssh-proxy-lb-backend\", \"cloud_properties\": { \"backend_service\": {\"name\": \"${terraform_prefix}-ssh-proxy-lb-backend\", \"scheme\": \"INTERNAL\"} }}"
+
+  # A custom VM extension is required to use internal TCP load balancing in GCP
+  # This extension is for the wss-logs
+  om-linux \
+    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --username "$OPS_MGR_USR" \
+    --password "$OPS_MGR_PWD" \
+    --skip-ssl-validation \
+    curl \
+    --request "PUT" \
+    --header "Content-Type: application/json" \
+    --path "/api/v0/staged/vm_extensions/${terraform_prefix}-wss-logs-lb-backend" \
+    --data "{\"name\": \"${terraform_prefix}-haproxy-lb-backend\", \"cloud_properties\": { \"backend_service\": {\"name\": \"${terraform_prefix}-wss-logs-lb-backend\", \"scheme\": \"INTERNAL\"} }}"
+
   cf_guid=$(om-linux \
     --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
     --username "$OPS_MGR_USR" \
@@ -449,6 +476,7 @@ if [[ "${pcf_iaas}" == "gcp" ]]; then
     --silent \
     --path "/api/v0/staged/products" | jq -r '.[] | select(.type == "cf") | .guid')
 
+  # Apply custom extension to HAProxy job
   haproxy_job_guid=$(om-linux \
     --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
     --username "$OPS_MGR_USR" \
@@ -477,4 +505,64 @@ if [[ "${pcf_iaas}" == "gcp" ]]; then
     curl\
     --request "PUT" \
     --path "/api/v0/staged/products/${cf_guid}/jobs/${haproxy_job_guid}/resource_config" -d "$haproxy_custom_vm_extension"
+
+  # Apply custom extension for ssh proxy 
+  diego_brain_job_guid=$(om-linux \
+    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --username "$OPS_MGR_USR" \
+    --password "$OPS_MGR_PWD" \
+    --skip-ssl-validation \
+    curl \
+    --request "GET" \
+    --silent \
+    --path "/api/v0/staged/products/${cf_guid}/jobs" | jq -r '.jobs[] | select(.name == "diego_brain") | .guid')
+
+  diego_brain_custom_vm_extension=$(om-linux \
+    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --username "$OPS_MGR_USR" \
+    --password "$OPS_MGR_PWD" \
+    --skip-ssl-validation \
+    curl \
+    --request "GET" \
+    --silent \
+    --path "/api/v0/staged/products/${cf_guid}/jobs/${diego_brain_job_guid}/resource_config" | jq ". + {\"additional_vm_extensions\":[\"${terraform_prefix}-ssh-proxy-lb-backend\"]}")
+
+  om-linux \
+    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --username "$OPS_MGR_USR" \
+    --password "$OPS_MGR_PWD" \
+    --skip-ssl-validation \
+    curl\
+    --request "PUT" \
+    --path "/api/v0/staged/products/${cf_guid}/jobs/${diego_brain_job_guid}/resource_config" -d "$diego_brain_custom_vm_extension"
+
+  # Apply custom extension for wss logs
+  router_job_guid=$(om-linux \
+    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --username "$OPS_MGR_USR" \
+    --password "$OPS_MGR_PWD" \
+    --skip-ssl-validation \
+    curl \
+    --request "GET" \
+    --silent \
+    --path "/api/v0/staged/products/${cf_guid}/jobs" | jq -r '.jobs[] | select(.name == "router") | .guid')
+
+  router_custom_vm_extension=$(om-linux \
+    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --username "$OPS_MGR_USR" \
+    --password "$OPS_MGR_PWD" \
+    --skip-ssl-validation \
+    curl \
+    --request "GET" \
+    --silent \
+    --path "/api/v0/staged/products/${cf_guid}/jobs/${router_job_guid}/resource_config" | jq ". + {\"additional_vm_extensions\":[\"${terraform_prefix}-wss-logs-lb-backend\"]}")
+
+  om-linux \
+    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --username "$OPS_MGR_USR" \
+    --password "$OPS_MGR_PWD" \
+    --skip-ssl-validation \
+    curl\
+    --request "PUT" \
+    --path "/api/v0/staged/products/${cf_guid}/jobs/${router_job_guid}/resource_config" -d "$router_custom_vm_extension"
 fi
