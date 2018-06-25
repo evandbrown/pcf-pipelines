@@ -178,7 +178,6 @@ cf_resources=$(
     if $iaas == "aws" then
       .router |= . + { "elb_names": ["\($terraform_prefix)-Pcf-Http-Elb"] }
       | .diego_brain |= . + { "elb_names": ["\($terraform_prefix)-Pcf-Ssh-Elb"] }
-    elif $iaas == "gcp" then
     else
       .
     end
