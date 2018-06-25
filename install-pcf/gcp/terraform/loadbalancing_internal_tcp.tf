@@ -2,8 +2,8 @@ resource "google_compute_forwarding_rule" "cf-haproxy" {
   name        = "${var.prefix}-haproxy-lb"
   backend_service     = "${google_compute_region_backend_service.cf-haproxy.self_link}"
   ports = ["80", "443"]
-  network                = "${google_compute_network.pcf-virt-net.name}"
-  subnetwork = "${google_compute_subnetwork.subnet-ops-manager.name}"
+  network                = "${google_compute_network.pcf-virt-net.self_link}"
+  subnetwork = "${google_compute_subnetwork.subnet-ops-manager.self_link}"
   load_balancing_scheme = "INTERNAL"
 }
 
