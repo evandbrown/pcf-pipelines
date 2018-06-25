@@ -21,7 +21,7 @@ resource "google_dns_record_set" "wildcard-sys-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_global_address.pcf.address}"]
+  rrdatas = ["${google_compute_forwarding_rule.cf-haproxy.ip_address}"]
 }
 
 resource "google_dns_record_set" "wildcard-apps-dns" {
@@ -31,7 +31,7 @@ resource "google_dns_record_set" "wildcard-apps-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_global_address.pcf.address}"]
+  rrdatas = ["${google_compute_forwarding_rule.cf-haproxy.ip_address}"]
 }
 
 resource "google_dns_record_set" "app-ssh-dns" {
