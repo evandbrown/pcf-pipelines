@@ -476,5 +476,5 @@ if [[ "${pcf_iaas}" == "gcp" ]]; then
     --skip-ssl-validation \
     curl\
     --request "PUT" \
-    --path "/api/v0/staged/products/${cf_guid}/jobs/${haproxy_job_guid}/resource_config" -d "$data"
+    --path "/api/v0/staged/products/${cf_guid}/jobs/${haproxy_job_guid}/resource_config" -d "$haproxy_custom_vm_extension"
 fi
