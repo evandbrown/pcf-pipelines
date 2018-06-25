@@ -13,7 +13,7 @@ resource "google_compute_instance_group" "cf-haproxy" {
   description = "terraform generated pcf instance group that is multi-zone for tcp load balancing to haproxy"
   
   zone        = "${element(list(var.gcp_zone_1,var.gcp_zone_2,var.gcp_zone_3), count.index)}"
-  network                = "${google_compute_network.pcf-virt-net.name}"
+  network                = "${google_compute_network.pcf-virt-net.self_link}"
 }
 
 resource "google_compute_region_backend_service" "cf-haproxy" {
