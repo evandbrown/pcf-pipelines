@@ -53,6 +53,7 @@ jobs:
   plan:
   - aggregate:
     - get: pcf-pipelines
+      params: {submodules: all}
     - get: terraform-state
   - task: wipe
     file: pcf-pipelines/install-pcf/gcp/tasks/wipe-env/task.yml
@@ -69,6 +70,7 @@ jobs:
 - name: upload-opsman-image
   plan:
   - get: pcf-pipelines
+    params: {submodules: all}
   - get: pivnet-opsmgr
     trigger: true
     params:
@@ -85,6 +87,7 @@ jobs:
   serial: true
   plan:
   - get: pcf-pipelines
+    params: {submodules: all}
   - task: create-terraform-state
     params:
       TERRAFORM_STATEFILE_BUCKET: {{terraform_statefile_bucket}}
@@ -101,6 +104,7 @@ jobs:
   - aggregate:
     - get: terraform-state
     - get: pcf-pipelines
+      params: {submodules: all}
     - get: pivnet-opsmgr
       passed: [upload-opsman-image]
       params:
@@ -117,6 +121,12 @@ jobs:
       GCP_ZONE_3: {{gcp_zone_3}}
       GCP_RESOURCE_PREFIX: {{gcp_resource_prefix}}
       GCP_STORAGE_BUCKET_LOCATION: {{gcp_storage_bucket_location}}
+      GCP_HOST_NET_PROJ_ID: {{gcp_host_net_proj_id}}
+      GCP_EXISTING_VIRT_NET: {{gcp_existing_virt_net}}
+      GCP_EXISTING_OPS_MAN_SUBNET: {{gcp_existing_ops_man_subnet}}
+      GCP_EXISTING_ERT_SUBNET: {{gcp_existing_ert_subnet}}
+      GCP_EXISTING_SERVICES_SUBNET: {{gcp_existing_services_subnet}}
+      GCP_EXISTING_DYNAMIC_SERVICES_SUBNET: {{gcp_existing_dynamic_services_subnet}}
       PCF_ERT_DOMAIN: {{pcf_ert_domain}}
       SYSTEM_DOMAIN: {{system_domain}}
       APPS_DOMAIN: {{apps_domain}}
@@ -154,6 +164,7 @@ jobs:
   plan:
   - aggregate:
     - get: pcf-pipelines
+      params: {submodules: all}
     - get: pivnet-opsmgr
       passed: [create-infrastructure]
       params: {globs: []}
@@ -189,6 +200,7 @@ jobs:
   plan:
   - aggregate:
     - get: pcf-pipelines
+      params: {submodules: all}
     - get: pivnet-opsmgr
       passed: [configure-director]
       trigger: true
@@ -207,6 +219,7 @@ jobs:
   plan:
   - aggregate:
     - get: pcf-pipelines
+      params: {submodules: all}
     - get: pivnet-opsmgr
       passed: [deploy-director]
       trigger: true
@@ -245,6 +258,7 @@ jobs:
   plan:
   - aggregate:
     - get: pcf-pipelines
+      params: {submodules: all}
     - get: pivnet-opsmgr
       passed: [upload-ert]
       trigger: true

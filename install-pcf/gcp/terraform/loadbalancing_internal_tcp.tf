@@ -1,10 +1,10 @@
 //// Internal TCP load balancer that fronts PCF's HAProxy
 resource "google_compute_forwarding_rule" "cf-haproxy" {
-  name        = "${var.prefix}-haproxy-lb"
-  backend_service     = "${google_compute_region_backend_service.cf-haproxy.self_link}"
-  ports = ["80", "443"]
-  network                = "${google_compute_network.pcf-virt-net.self_link}"
-  subnetwork = "${google_compute_subnetwork.subnet-ops-manager.self_link}"
+  name                  = "${var.prefix}-haproxy-lb"
+  backend_service       = "${google_compute_region_backend_service.cf-haproxy.self_link}"
+  ports                 = ["80", "443"]
+  network               = "${data.google_compute_network.gcp_existing_virt_net.self_link}"
+  subnetwork            = "${data.google_compute_subnetwork.gcp_existing_ops_man_subnet.self_link}"
   load_balancing_scheme = "INTERNAL"
 }
 
@@ -12,9 +12,9 @@ resource "google_compute_instance_group" "cf-haproxy" {
   count       = 3
   name        = "${var.prefix}-haproxy-lb"
   description = "terraform generated pcf instance group that is multi-zone for tcp load balancing to haproxy"
-  
-  zone        = "${element(list(var.gcp_zone_1,var.gcp_zone_2,var.gcp_zone_3), count.index)}"
-  network                = "${google_compute_network.pcf-virt-net.self_link}"
+
+  zone    = "${element(list(var.gcp_zone_1,var.gcp_zone_2,var.gcp_zone_3), count.index)}"
+  network = "${data.google_compute_network.gcp_existing_virt_net.self_link}"
 }
 
 resource "google_compute_region_backend_service" "cf-haproxy" {
@@ -38,7 +38,7 @@ resource "google_compute_region_backend_service" "cf-haproxy" {
 }
 
 resource "google_compute_health_check" "cf-haproxy" {
-  name        = "${var.prefix}-haproxy-lb-healthcheck"
+  name               = "${var.prefix}-haproxy-lb-healthcheck"
   check_interval_sec = 5
   timeout_sec        = 5
 
@@ -47,11 +47,11 @@ resource "google_compute_health_check" "cf-haproxy" {
 
 //// Internal TCP load balancer that fronts the SSH proxy
 resource "google_compute_forwarding_rule" "cf-ssh-proxy" {
-  name        = "${var.prefix}-ssh-proxy-lb"
-  backend_service     = "${google_compute_region_backend_service.cf-ssh-proxy.self_link}"
-  ports = ["2222"]
-  network                = "${google_compute_network.pcf-virt-net.self_link}"
-  subnetwork = "${google_compute_subnetwork.subnet-ops-manager.self_link}"
+  name                  = "${var.prefix}-ssh-proxy-lb"
+  backend_service       = "${google_compute_region_backend_service.cf-ssh-proxy.self_link}"
+  ports                 = ["2222"]
+  network               = "${data.google_compute_network.gcp_existing_virt_net.self_link}"
+  subnetwork            = "${data.google_compute_subnetwork.gcp_existing_ops_man_subnet.self_link}"
   load_balancing_scheme = "INTERNAL"
 }
 
@@ -59,9 +59,9 @@ resource "google_compute_instance_group" "cf-ssh-proxy" {
   count       = 3
   name        = "${var.prefix}-ssh-proxy-lb"
   description = "terraform generated pcf instance group that is multi-zone for tcp load balancing to the SSH proxy"
- 
-  zone        = "${element(list(var.gcp_zone_1,var.gcp_zone_2,var.gcp_zone_3), count.index)}"
-  network                = "${google_compute_network.pcf-virt-net.self_link}"
+
+  zone    = "${element(list(var.gcp_zone_1,var.gcp_zone_2,var.gcp_zone_3), count.index)}"
+  network = "${data.google_compute_network.gcp_existing_virt_net.self_link}"
 }
 
 resource "google_compute_region_backend_service" "cf-ssh-proxy" {
@@ -85,7 +85,7 @@ resource "google_compute_region_backend_service" "cf-ssh-proxy" {
 }
 
 resource "google_compute_health_check" "cf-ssh-proxy" {
-  name        = "${var.prefix}-ssh-proxy-lb-healthcheck"
+  name               = "${var.prefix}-ssh-proxy-lb-healthcheck"
   check_interval_sec = 5
   timeout_sec        = 5
 
@@ -96,11 +96,11 @@ resource "google_compute_health_check" "cf-ssh-proxy" {
 
 //// Internal TCP load balancer that fronts wss-logs
 resource "google_compute_forwarding_rule" "cf-wss-logs" {
-  name        = "${var.prefix}-wss-logs-lb"
-  backend_service     = "${google_compute_region_backend_service.cf-wss-logs.self_link}"
-  ports = ["443"]
-  network                = "${google_compute_network.pcf-virt-net.self_link}"
-  subnetwork = "${google_compute_subnetwork.subnet-ops-manager.self_link}"
+  name                  = "${var.prefix}-wss-logs-lb"
+  backend_service       = "${google_compute_region_backend_service.cf-wss-logs.self_link}"
+  ports                 = ["443"]
+  network               = "${data.google_compute_network.gcp_existing_virt_net.self_link}"
+  subnetwork            = "${data.google_compute_subnetwork.gcp_existing_ops_man_subnet.self_link}"
   load_balancing_scheme = "INTERNAL"
 }
 
@@ -109,7 +109,7 @@ resource "google_compute_instance_group" "cf-wss-logs" {
   name        = "${var.prefix}-wss-logs-lb"
   description = "terraform generated pcf instance group that is multi-zone for tcp load balancing to the SSH proxy"
   zone        = "${element(list(var.gcp_zone_1,var.gcp_zone_2,var.gcp_zone_3), count.index)}"
-  network                = "${google_compute_network.pcf-virt-net.self_link}"
+  network     = "${data.google_compute_network.gcp_existing_virt_net.self_link}"
 }
 
 resource "google_compute_region_backend_service" "cf-wss-logs" {
@@ -133,7 +133,7 @@ resource "google_compute_region_backend_service" "cf-wss-logs" {
 }
 
 resource "google_compute_health_check" "cf-wss-logs" {
-  name        = "${var.prefix}-wss-logs-lb-healthcheck"
+  name               = "${var.prefix}-wss-logs-lb-healthcheck"
   check_interval_sec = 5
   timeout_sec        = 5
 

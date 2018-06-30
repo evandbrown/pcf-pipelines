@@ -1,10 +1,10 @@
 resource "google_compute_instance" "ops-manager" {
   name         = "${var.prefix}-ops-manager"
-  depends_on   = ["google_compute_subnetwork.subnet-ops-manager"]
+  depends_on   = ["data.google_compute_subnetwork.gcp_existing_ops_man_subnet"]
   machine_type = "n1-standard-2"
   zone         = "${var.gcp_zone_1}"
 
-  tags = ["${var.prefix}-opsman", "allow-https"]
+  tags = ["${var.prefix}", "${var.prefix}-opsman", "allow-https"]
 
   boot_disk {
     initialize_params {
@@ -14,11 +14,7 @@ resource "google_compute_instance" "ops-manager" {
   }
 
   network_interface {
-    subnetwork = "${google_compute_subnetwork.subnet-ops-manager.name}"
-
-    access_config {
-      nat_ip = "${google_compute_address.opsman.address}"
-    }
+    subnetwork = "${data.google_compute_subnetwork.gcp_existing_ops_man_subnet.name}"
   }
 }
 
