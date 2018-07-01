@@ -168,6 +168,7 @@ jobs:
     - get: pivnet-opsmgr
       passed: [create-infrastructure]
       params: {globs: []}
+    - get: terraform-state
   - task: check-opsman-dns
     attempts: 3
     file: pcf-pipelines/install-pcf/gcp/tasks/check-opsman-dns/task.yml
