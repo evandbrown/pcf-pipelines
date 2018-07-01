@@ -8,6 +8,7 @@ image_resource:
 
 inputs:
 - name: pcf-pipelines
+- name: terraform-state
 
 params:
   OPSMAN_DOMAIN_OR_IP_ADDRESS:
