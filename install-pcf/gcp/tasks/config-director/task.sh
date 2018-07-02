@@ -32,19 +32,23 @@ pushd terraform-state
 
   infra_vcenter_network="${network_project}/${network_name}/$(echo $output_json | jq -r '.ops_manager_subnet.value')/${network_region}"
   infra_vcenter_network_cidr=$(echo $output_json | jq -r '.ops_manager_cidr.value')
+  infra_vcenter_reserved_range=$(echo $output_json | jq -r '.ops_manager_reserved_range.value')
   infra_vcenter_network_gateway=$(echo $output_json | jq -r '.ops_manager_gateway.value')
 
   deployment_vcenter_network="${network_project}/${network_name}/$(echo $output_json | jq -r '.ert_subnet.value')/${network_region}"
   deployment_vcenter_network_cidr=$(echo $output_json | jq -r '.ert_cidr.value')
+  deployment_vcenter_reserved_range=$(echo $output_json | jq -r '.ert_reserved_range.value')
   deployment_vcenter_network_gateway=$(echo $output_json | jq -r '.ert_gateway.value')
 
 
   services_vcenter_network="${network_project}/${network_name}/$(echo $output_json | jq -r '.svc_net_1_subnet.value')/${network_region}"
   services_vcenter_network_cidr=$(echo $output_json | jq -r '.svc_net_1_cidr.value')
+  services_vcenter_reserved_range=$(echo $output_json | jq -r '.svc_net_1_reserved_range.value')
   services_vcenter_network_gateway=$(echo $output_json | jq -r '.svc_net_1_gateway.value')
 
   dynamic_services_vcenter_network="${network_project}/${network_name}/$(echo $output_json | jq -r '.dynamic_svc_net_1_subnet.value')/${network_region}"
   dynamic_services_vcenter_network_cidr=$(echo $output_json | jq -r '.dynamic_svc_net_1_cidr.value')
+  dynamic_services_vcenter_reserved_range=$(echo $output_json | jq -r '.dynamic_svc_net_1_reserved_range.value')
   dynamic_services_vcenter_network_gateway=$(echo $output_json | jq -r '.dynamic_svc_net_1_gateway.value')
 popd
 
@@ -54,24 +58,28 @@ network_configuration=$(
     --arg infra_network_name "infrastructure" \
     --arg infra_vcenter_network "${infra_vcenter_network}" \
     --arg infra_network_cidr "${infra_vcenter_network_cidr}" \
+    --arg infra_reserved_ip_ranges "${infra_vcenter_reserved_range}" \
     --arg infra_dns "${infra_vcenter_network_gateway},8.8.8.8" \
     --arg infra_gateway "${infra_vcenter_network_gateway}" \
     --arg infra_availability_zones "$availability_zones" \
     --arg deployment_network_name "ert" \
     --arg deployment_vcenter_network "${deployment_vcenter_network}" \
     --arg deployment_network_cidr "${deployment_vcenter_network_cidr}" \
+    --arg deployment_reserved_ip_ranges "${deployment_vcenter_reserved_range}" \
     --arg deployment_dns "${deployment_vcenter_network_gateway},8.8.8.8" \
     --arg deployment_gateway "${deployment_vcenter_network_gateway}" \
     --arg deployment_availability_zones "$availability_zones" \
     --arg services_network_name "services-1" \
     --arg services_vcenter_network "${services_vcenter_network}" \
     --arg services_network_cidr "${services_vcenter_network_cidr}" \
+    --arg services_reserved_ip_ranges "${services_vcenter_reserved_range}" \
     --arg services_dns "${services_vcenter_network_gateway},8.8.8.8" \
     --arg services_gateway "${services_vcenter_network_gateway}" \
     --arg services_availability_zones "$availability_zones" \
     --arg dynamic_services_network_name "dynamic-services-1" \
     --arg dynamic_services_vcenter_network "${dynamic_services_vcenter_network}" \
     --arg dynamic_services_network_cidr "${dynamic_services_vcenter_network_cidr}" \
+    --arg dynamic_services_reserved_ip_ranges "${dynamic_services_vcenter_reserved_range}" \
     --arg dynamic_services_dns "${dynamic_services_vcenter_network_gateway},8.8.8.8" \
     --arg dynamic_services_gateway "${dynamic_services_vcenter_network_gateway}" \
     --arg dynamic_services_availability_zones "$availability_zones" \
@@ -86,6 +94,7 @@ network_configuration=$(
             {
               "iaas_identifier": $infra_vcenter_network,
               "cidr": $infra_network_cidr,
+              "reserved_ip_ranges": $infra_reserved_ip_ranges,
               "dns": $infra_dns,
               "gateway": $infra_gateway,
               "availability_zone_names": ($infra_availability_zones | split(","))
@@ -99,6 +108,7 @@ network_configuration=$(
             {
               "iaas_identifier": $deployment_vcenter_network,
               "cidr": $deployment_network_cidr,
+              "reserved_ip_ranges": $deployment_reserved_ip_ranges,
               "dns": $deployment_dns,
               "gateway": $deployment_gateway,
               "availability_zone_names": ($deployment_availability_zones | split(","))
@@ -112,6 +122,7 @@ network_configuration=$(
             {
               "iaas_identifier": $services_vcenter_network,
               "cidr": $services_network_cidr,
+              "reserved_ip_ranges": $services_reserved_ip_ranges,
               "dns": $services_dns,
               "gateway": $services_gateway,
               "availability_zone_names": ($services_availability_zones | split(","))
@@ -125,6 +136,7 @@ network_configuration=$(
             {
               "iaas_identifier": $dynamic_services_vcenter_network,
               "cidr": $dynamic_services_network_cidr,
+              "reserved_ip_ranges": $dynamic_services_reserved_ip_ranges,
               "dns": $dynamic_services_dns,
               "gateway": $dynamic_services_gateway,
               "availability_zone_names": ($dynamic_services_availability_zones | split(","))
