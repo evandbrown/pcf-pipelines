@@ -56,6 +56,10 @@ output "ops_manager_gateway" {
   value = "${data.google_compute_subnetwork.gcp_existing_ops_man_subnet.gateway_address}"
 }
 
+output "ops_manager_reserved_range" {
+  value = "${data.google_compute_subnetwork.gcp_existing_ops_man_subnet.gateway_address}-${cidrhost(data.google_compute_subnetwork.gcp_existing_ops_man_subnet.ip_cidr_range, 20)}"
+}
+
 output "ops_manager_cidr" {
   value = "${data.google_compute_subnetwork.gcp_existing_ops_man_subnet.ip_cidr_range}"
 }
@@ -66,6 +70,10 @@ output "ops_manager_subnet" {
 
 output "ert_gateway" {
   value = "${data.google_compute_subnetwork.gcp_existing_ert_subnet.gateway_address}"
+}
+
+output "ert_reserved_range" {
+  value = "${data.google_compute_subnetwork.gcp_existing_ert_subnet.gateway_address}-${cidrhost(data.google_compute_subnetwork.gcp_existing_ert_subnet.ip_cidr_range, 20)}"
 }
 
 output "ert_cidr" {
@@ -80,6 +88,10 @@ output "svc_net_1_gateway" {
   value = "${data.google_compute_subnetwork.gcp_existing_services_subnet.gateway_address}"
 }
 
+output "svc_net_1_reserved_range" {
+  value = "${data.google_compute_subnetwork.gcp_existing_services_subnet.gateway_address}-${cidrhost(data.google_compute_subnetwork.gcp_existing_services_subnet.ip_cidr_range, 20)}"
+}
+
 output "svc_net_1_cidr" {
   value = "${data.google_compute_subnetwork.gcp_existing_services_subnet.ip_cidr_range}"
 }
@@ -90,6 +102,10 @@ output "svc_net_1_subnet" {
 
 output "dynamic_svc_net_1_gateway" {
   value = "${data.google_compute_subnetwork.gcp_existing_dynamic_services_subnet.gateway_address}"
+}
+
+output "dynamic_svc_net_1_reserved_range" {
+  value = "${data.google_compute_subnetwork.gcp_existing_dynamic_services_subnet.gateway_address}-${cidrhost(data.google_compute_subnetwork.gcp_existing_dynamic_services_subnet.ip_cidr_range, 20)}"
 }
 
 output "dynamic_svc_net_1_cidr" {
