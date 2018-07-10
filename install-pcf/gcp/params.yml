@@ -107,12 +107,12 @@ gcp_zone_2: us-central1-b
 gcp_zone_3: us-central1-c
 
 # Existing network and subnetworks
-host-network-project: CHANGEME
-existing-virt-net: CHANGEME
-existing-ops-man-subnet: CHANGEME
-existing-ert-subnet: CHANGEME
-existing-services-subnet: CHANGEME
-existing-dynamic-services-subnet: CHANGEME
+gcp_host_net_proj_id: CHANGEME
+gcp_existing_virt_net: CHANGEME
+gcp_existing_ops_man_subnet: CHANGEME
+gcp_existing_ert_subnet: CHANGEME
+gcp_existing_services_subnet: CHANGEME
+gcp_existing_dynamic_services_subnet: CHANGEME
 
 # Optional - if your git repo requires an SSH key.
 git_private_key:
