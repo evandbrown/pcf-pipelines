@@ -33,6 +33,12 @@ terraform plan \
   -var "gcp_zone_1=${GCP_ZONE_1}" \
   -var "gcp_zone_2=${GCP_ZONE_2}" \
   -var "gcp_zone_3=${GCP_ZONE_3}" \
+  -var "gcp_host_net_proj_id=${GCP_HOST_NET_PROJ_ID}" \
+  -var "gcp_existing_virt_net=${GCP_EXISTING_VIRT_NET}" \
+  -var "gcp_existing_ops_man_subnet=${GCP_EXISTING_OPS_MAN_SUBNET}" \
+  -var "gcp_existing_ert_subnet=${GCP_EXISTING_ERT_SUBNET}" \
+  -var "gcp_existing_services_subnet=${GCP_EXISTING_SERVICES_SUBNET}" \
+  -var "gcp_existing_dynamic_services_subnet=${GCP_EXISTING_DYNAMIC_SERVICES_SUBNET}" \
   -var "gcp_storage_bucket_location=${GCP_STORAGE_BUCKET_LOCATION}" \
   -var "prefix=${GCP_RESOURCE_PREFIX}" \
   -var "pcf_opsman_image_name=${pcf_opsman_image_name}" \
@@ -80,7 +86,7 @@ cd $root/create-infrastructure-output
   priv_ip_haproxy=$(echo $output_json | jq --raw-output '.priv_ip_haproxy.value')
   priv_ip_ssh_proxy=$(echo $output_json | jq --raw-output '.priv_ip_ssh_proxy.value')
   priv_ip_wss_logs=$(echo $output_json | jq --raw-output '.priv_ip_wss_logs.value')
-  pub_ip_opsman=$(echo $output_json | jq --raw-output '.pub_ip_opsman.value')
+  priv_ip_opsman=$(echo $output_json | jq --raw-output '.priv_ip_opsman.value')
 cd -
 
 echo "Please configure DNS as follows:"
@@ -90,6 +96,5 @@ echo "*.${APPS_DOMAIN} == ${priv_ip_haproxy}"
 echo "ssh.${SYSTEM_DOMAIN} == ${priv_ip_ssh_proxy}"
 echo "doppler.${SYSTEM_DOMAIN} == ${priv_ip_wss_logs}"
 echo "loggregator.${SYSTEM_DOMAIN} == ${priv_ip_wss_logs}"
-#echo "tcp.${PCF_ERT_DOMAIN} == ${pub_ip_ssh_tcp_lb}"
-echo "opsman.${PCF_ERT_DOMAIN} == ${pub_ip_opsman}"
+echo "opsman.${PCF_ERT_DOMAIN} == ${priv_ip_opsman}"
 echo "----------------------------------------------------------------------------------------------"

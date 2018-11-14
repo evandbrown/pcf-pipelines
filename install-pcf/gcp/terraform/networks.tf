@@ -1,31 +1,28 @@
-resource "google_compute_network" "pcf-virt-net" {
-  name = "${var.prefix}-virt-net"
+data "google_compute_network" "gcp_existing_virt_net" {
+  name    = "${var.gcp_existing_virt_net}"
+  project = "${var.gcp_host_net_proj_id}"
 }
 
 // Ops Manager & Jumpbox
-resource "google_compute_subnetwork" "subnet-ops-manager" {
-  name          = "${var.prefix}-subnet-infrastructure-${var.gcp_region}"
-  ip_cidr_range = "192.168.101.0/26"
-  network       = "${google_compute_network.pcf-virt-net.self_link}"
+data "google_compute_subnetwork" "gcp_existing_ops_man_subnet" {
+  name    = "${var.gcp_existing_ops_man_subnet}"
+  project = "${var.gcp_host_net_proj_id}"
 }
 
 // ERT
-resource "google_compute_subnetwork" "subnet-ert" {
-  name          = "${var.prefix}-subnet-ert-${var.gcp_region}"
-  ip_cidr_range = "192.168.16.0/22"
-  network       = "${google_compute_network.pcf-virt-net.self_link}"
+data "google_compute_subnetwork" "gcp_existing_ert_subnet" {
+  name    = "${var.gcp_existing_ert_subnet}"
+  project = "${var.gcp_host_net_proj_id}"
 }
 
 // Services Tile
-resource "google_compute_subnetwork" "subnet-services-1" {
-  name          = "${var.prefix}-subnet-services-1-${var.gcp_region}"
-  ip_cidr_range = "192.168.20.0/22"
-  network       = "${google_compute_network.pcf-virt-net.self_link}"
+data "google_compute_subnetwork" "gcp_existing_services_subnet" {
+  name    = "${var.gcp_existing_services_subnet}"
+  project = "${var.gcp_host_net_proj_id}"
 }
 
 // Dynamic Services Tile
-resource "google_compute_subnetwork" "subnet-dynamic-services-1" {
-  name          = "${var.prefix}-subnet-dynamic-services-1-${var.gcp_region}"
-  ip_cidr_range = "192.168.24.0/22"
-  network       = "${google_compute_network.pcf-virt-net.self_link}"
+data "google_compute_subnetwork" "gcp_existing_dynamic_services_subnet" {
+  name    = "${var.gcp_existing_dynamic_services_subnet}"
+  project = "${var.gcp_host_net_proj_id}"
 }

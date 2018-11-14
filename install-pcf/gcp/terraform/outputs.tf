@@ -4,6 +4,10 @@ output "project" {
   value = "${var.gcp_proj_id}"
 }
 
+output "host_network_project" {
+  value = "${var.gcp_host_net_proj_id}"
+}
+
 output "region" {
   value = "${var.gcp_region}"
 }
@@ -35,7 +39,7 @@ output "tcp_domain" {
 }
 
 output "ops_manager_public_ip" {
-  value = "${google_compute_instance.ops-manager.network_interface.0.access_config.0.assigned_nat_ip}"
+  value = "${google_compute_instance.ops-manager.network_interface.0.address}"
 }
 
 output "env_dns_zone_name_servers" {
@@ -45,55 +49,55 @@ output "env_dns_zone_name_servers" {
 // Network Output
 
 output "network_name" {
-  value = "${google_compute_network.pcf-virt-net.name}"
+  value = "${data.google_compute_network.gcp_existing_virt_net.name}"
 }
 
 output "ops_manager_gateway" {
-  value = "${google_compute_subnetwork.subnet-ops-manager.gateway_address}"
+  value = "${data.google_compute_subnetwork.gcp_existing_ops_man_subnet.gateway_address}"
 }
 
 output "ops_manager_cidr" {
-  value = "${google_compute_subnetwork.subnet-ops-manager.ip_cidr_range}"
+  value = "${data.google_compute_subnetwork.gcp_existing_ops_man_subnet.ip_cidr_range}"
 }
 
 output "ops_manager_subnet" {
-  value = "${google_compute_subnetwork.subnet-ops-manager.name}"
+  value = "${data.google_compute_subnetwork.gcp_existing_ops_man_subnet.name}"
 }
 
 output "ert_gateway" {
-  value = "${google_compute_subnetwork.subnet-ert.gateway_address}"
+  value = "${data.google_compute_subnetwork.gcp_existing_ert_subnet.gateway_address}"
 }
 
 output "ert_cidr" {
-  value = "${google_compute_subnetwork.subnet-ert.ip_cidr_range}"
+  value = "${data.google_compute_subnetwork.gcp_existing_ert_subnet.ip_cidr_range}"
 }
 
 output "ert_subnet" {
-  value = "${google_compute_subnetwork.subnet-ert.name}"
+  value = "${data.google_compute_subnetwork.gcp_existing_ert_subnet.name}"
 }
 
 output "svc_net_1_gateway" {
-  value = "${google_compute_subnetwork.subnet-services-1.gateway_address}"
+  value = "${data.google_compute_subnetwork.gcp_existing_services_subnet.gateway_address}"
 }
 
 output "svc_net_1_cidr" {
-  value = "${google_compute_subnetwork.subnet-services-1.ip_cidr_range}"
+  value = "${data.google_compute_subnetwork.gcp_existing_services_subnet.ip_cidr_range}"
 }
 
 output "svc_net_1_subnet" {
-  value = "${google_compute_subnetwork.subnet-services-1.name}"
+  value = "${data.google_compute_subnetwork.gcp_existing_services_subnet.name}"
 }
 
 output "dynamic_svc_net_1_gateway" {
-  value = "${google_compute_subnetwork.subnet-dynamic-services-1.gateway_address}"
+  value = "${data.google_compute_subnetwork.gcp_existing_dynamic_services_subnet.gateway_address}"
 }
 
 output "dynamic_svc_net_1_cidr" {
-  value = "${google_compute_subnetwork.subnet-dynamic-services-1.ip_cidr_range}"
+  value = "${data.google_compute_subnetwork.gcp_existing_dynamic_services_subnet.ip_cidr_range}"
 }
 
 output "dynamic_svc_net_1_subnet" {
-  value = "${google_compute_subnetwork.subnet-dynamic-services-1.name}"
+  value = "${data.google_compute_subnetwork.gcp_existing_dynamic_services_subnet.name}"
 }
 
 // Http Load Balancer Output
@@ -128,20 +132,11 @@ output "director_blobstore_bucket" {
   value = "${google_storage_bucket.director.name}"
 }
 
-////output "pub_ip_global_pcf" {
-////  value = "${google_compute_global_address.pcf.address}"
-////}
-////
-////output "pub_ip_ssh_and_doppler" {
-////  value = "${google_compute_address.ssh-and-doppler.address}"
-////}
-////
-////output "pub_ip_ssh_tcp_lb" {
-////  value = "${google_compute_address.cf-tcp.address}"
-////}
-
 output "priv_ip_haproxy" {
   value = "${google_compute_address.internal_haproxy.address}"
+
+output "priv_ip_opsman" {
+  value = "${google_compute_instance.ops-manager.network_interface.0.address}"
 }
 
 output "priv_ip_ssh_proxy" {

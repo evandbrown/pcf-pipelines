@@ -112,7 +112,7 @@ terraform destroy -force \
   -var "pub_ip_ssh_and_doppler=dontcare" \
   -var "dynamic_svc_net_1_gateway=dontcare" \
   -var "ert_gateway=dontcare" \
-  -var "pub_ip_opsman=dontcare" \
+  -var "priv_ip_opsman=dontcare" \
   -var "network_name=dontcare" \
   -var "ops_manager_gateway=dontcare" \
   -var "svc_net_1_gateway=dontcare" \

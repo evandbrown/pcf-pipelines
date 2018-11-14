@@ -1,7 +1,8 @@
 // Allow ssh from public networks
 resource "google_compute_firewall" "allow-ssh" {
   name    = "${var.prefix}-allow-ssh"
-  network = "${google_compute_network.pcf-virt-net.name}"
+  network = "${data.google_compute_network.gcp_existing_virt_net.name}"
+  project = "${var.gcp_host_net_proj_id}"
 
   allow {
     protocol = "tcp"
@@ -15,7 +16,8 @@ resource "google_compute_firewall" "allow-ssh" {
 // Allow http from public
 resource "google_compute_firewall" "pcf-allow-http" {
   name    = "${var.prefix}-allow-http"
-  network = "${google_compute_network.pcf-virt-net.name}"
+  network = "${data.google_compute_network.gcp_existing_virt_net.name}"
+  project = "${var.gcp_host_net_proj_id}"
 
   allow {
     protocol = "tcp"
@@ -29,7 +31,8 @@ resource "google_compute_firewall" "pcf-allow-http" {
 // Allow https from public
 resource "google_compute_firewall" "pcf-allow-https" {
   name    = "${var.prefix}-allow-https"
-  network = "${google_compute_network.pcf-virt-net.name}"
+  network = "${data.google_compute_network.gcp_existing_virt_net.name}"
+  project = "${var.gcp_host_net_proj_id}"
 
   allow {
     protocol = "tcp"
@@ -43,7 +46,8 @@ resource "google_compute_firewall" "pcf-allow-https" {
 //// GO Router Health Checks
 resource "google_compute_firewall" "pcf-allow-http-8080" {
   name    = "${var.prefix}-allow-http-8080"
-  network = "${google_compute_network.pcf-virt-net.name}"
+  network = "${data.google_compute_network.gcp_existing_virt_net.name}"
+  project = "${var.gcp_host_net_proj_id}"
 
   allow {
     protocol = "tcp"
@@ -57,7 +61,8 @@ resource "google_compute_firewall" "pcf-allow-http-8080" {
 //// Internal TCP LB Health Checks
 resource "google_compute_firewall" "haprox-health-check" {
   name    = "${var.prefix}-allow-ilb-health-check"
-  network = "${google_compute_network.pcf-virt-net.name}"
+  network = "${data.google_compute_network.gcp_existing_virt_net.name}"
+  project = "${var.gcp_host_net_proj_id}"
 
   allow {
     protocol = "tcp"
@@ -71,8 +76,9 @@ resource "google_compute_firewall" "haprox-health-check" {
 //// This will match the default OpsMan tag configured for the deployment
 resource "google_compute_firewall" "allow-ert-all" {
   name       = "${var.prefix}-allow-ert-all"
-  depends_on = ["google_compute_network.pcf-virt-net"]
-  network    = "${google_compute_network.pcf-virt-net.name}"
+  depends_on = ["data.google_compute_network.gcp_existing_virt_net"]
+  network    = "${data.google_compute_network.gcp_existing_virt_net.name}"
+  project    = "${var.gcp_host_net_proj_id}"
 
   allow {
     protocol = "icmp"
@@ -93,8 +99,9 @@ resource "google_compute_firewall" "allow-ert-all" {
 //// Allow access to ssh-proxy [Optional]
 resource "google_compute_firewall" "cf-ssh-proxy" {
   name       = "${var.prefix}-allow-ssh-proxy"
-  depends_on = ["google_compute_network.pcf-virt-net"]
-  network    = "${google_compute_network.pcf-virt-net.name}"
+  depends_on = ["data.google_compute_network.gcp_existing_virt_net"]
+  network    = "${data.google_compute_network.gcp_existing_virt_net.name}"
+  project    = "${var.gcp_host_net_proj_id}"
 
   allow {
     protocol = "tcp"
@@ -107,8 +114,9 @@ resource "google_compute_firewall" "cf-ssh-proxy" {
 //// Allow access to Optional CF TCP router
 resource "google_compute_firewall" "cf-tcp" {
   name       = "${var.prefix}-allow-cf-tcp"
-  depends_on = ["google_compute_network.pcf-virt-net"]
-  network    = "${google_compute_network.pcf-virt-net.name}"
+  depends_on = ["data.google_compute_network.gcp_existing_virt_net"]
+  network    = "${data.google_compute_network.gcp_existing_virt_net.name}"
+  project    = "${var.gcp_host_net_proj_id}"
 
   allow {
     protocol = "tcp"

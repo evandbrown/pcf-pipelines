@@ -7,7 +7,7 @@ image_resource:
     repository: pcfnorm/rootfs
 
 inputs:
-- name: pcf-pipelines 
+- name: pcf-pipelines
 - name: pivnet-opsmgr
 - name: terraform-state
 
@@ -23,6 +23,12 @@ params:
   GCP_ZONE_3:
   GCP_STORAGE_BUCKET_LOCATION:
   GCP_RESOURCE_PREFIX:
+  GCP_HOST_NET_PROJ_ID:
+  GCP_EXISTING_VIRT_NET:
+  GCP_EXISTING_OPS_MAN_SUBNET:
+  GCP_EXISTING_ERT_SUBNET:
+  GCP_EXISTING_SERVICES_SUBNET:
+  GCP_EXISTING_DYNAMIC_SERVICES_SUBNET:
   PCF_ERT_DOMAIN:
   SYSTEM_DOMAIN:
   APPS_DOMAIN:
