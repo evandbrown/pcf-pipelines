@@ -38,10 +38,6 @@ output "tcp_domain" {
   value = "tcp.${var.pcf_ert_domain}"
 }
 
-output "ops_manager_public_ip" {
-  value = "${google_compute_instance.ops-manager.network_interface.0.address}"
-}
-
 output "env_dns_zone_name_servers" {
   value = "${google_dns_managed_zone.env_dns_zone.name_servers}"
 }
