@@ -112,16 +112,6 @@ output "dynamic_svc_net_1_subnet" {
   value = "${data.google_compute_subnetwork.gcp_existing_dynamic_services_subnet.name}"
 }
 
-// Http Load Balancer Output
-
-//output "http_lb_backend_name" {
-//  value = "${google_compute_backend_service.ert_http_lb_backend_service.name}"
-//}
-
-//output "tcp_router_pool" {
-//  value = "${google_compute_target_pool.cf-tcp.name}"
-//}
-
 // Cloud Storage Bucket Output
 
 output "buildpacks_bucket" {
@@ -146,6 +136,7 @@ output "director_blobstore_bucket" {
 
 output "priv_ip_haproxy" {
   value = "${google_compute_address.internal_haproxy.address}"
+}
 
 output "priv_ip_opsman" {
   value = "${google_compute_instance.ops-manager.network_interface.0.address}"
