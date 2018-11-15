@@ -15,6 +15,7 @@ resource "google_compute_instance" "ops-manager" {
 
   network_interface {
     subnetwork = "${data.google_compute_subnetwork.gcp_existing_ops_man_subnet.name}"
+    network_ip = "${google_compute_address.internal_ops_man.address}"
   }
 }
 

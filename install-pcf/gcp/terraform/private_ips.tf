@@ -18,3 +18,10 @@ resource "google_compute_address" "internal_wss_logs" {
   subnetwork   = "${data.google_compute_subnetwork.gcp_existing_ops_man_subnet.self_link}"
   address_type = "INTERNAL"
 }
+
+// Private static IP address for Ops Manager
+resource "google_compute_address" "internal_ops_man" {
+  name         = "${var.prefix}-ops-man"
+  subnetwork   = "${data.google_compute_subnetwork.gcp_existing_ops_man_subnet.self_link}"
+  address_type = "INTERNAL"
+}
