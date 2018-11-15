@@ -150,10 +150,6 @@ output "priv_ip_wss_logs" {
   value = "${google_compute_address.internal_wss_logs.address}"
 }
 
-output "sql_instance_ip" {
-  value = "${google_sql_database_instance.master.ip_address.0.ip_address}"
-}
-
 output "ert_certificate" {
   value = "${google_compute_ssl_certificate.ssl-cert.certificate}"
 }
