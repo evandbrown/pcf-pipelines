@@ -135,7 +135,7 @@ output "director_blobstore_bucket" {
 }
 
 output "priv_ip_haproxy" {
-  value = "${google_compute_address.internal_haproxy.address}"
+  value = "${google_compute_address.internal_gorouter.address}"
 }
 
 output "priv_ip_opsman" {

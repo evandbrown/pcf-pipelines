@@ -21,7 +21,7 @@ resource "google_dns_record_set" "wildcard-sys-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_address.internal_haproxy.address}"]
+  rrdatas = ["${google_compute_address.internal_gorouter.address}"]
 }
 
 resource "google_dns_record_set" "wildcard-apps-dns" {
@@ -31,7 +31,7 @@ resource "google_dns_record_set" "wildcard-apps-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_address.internal_haproxy.address}"]
+  rrdatas = ["${google_compute_address.internal_gorouter.address}"]
 }
 
 resource "google_dns_record_set" "app-ssh-dns" {
